@@ -90,6 +90,14 @@ export class CommandRun extends DefaultCommand {
 
         // If condition is valid, run "then" action
         if (valid) {
+          if (step.then === '_next') {
+            continue;
+          }
+
+          if (step.then === '_end') {
+            this.end();
+          }
+
           const action = await this._findAction(step.then);
           if (!action) {
             Utils.logError(
@@ -108,6 +116,14 @@ export class CommandRun extends DefaultCommand {
         // If condition is not valid, run "else" action
         else {
           if (step.else) {
+            if (step.else === '_next') {
+              continue;
+            }
+
+            if (step.else === '_end') {
+              this.end();
+            }
+
             const action = await this._findAction(step.else);
             if (!action) {
               Utils.logError(
