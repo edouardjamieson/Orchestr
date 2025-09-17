@@ -27,6 +27,9 @@ import DefaultCommand from './commands.service';
 import { validateScriptStructure } from '../validate';
 
 export class CommandRun extends DefaultCommand {
+  private nextStepOverride = '__continue';
+  private endStepOverride = '__end';
+
   constructor(props: CommandOptions) {
     super(props);
 
@@ -90,11 +93,11 @@ export class CommandRun extends DefaultCommand {
 
         // If condition is valid, run "then" action
         if (valid) {
-          if (step.then === '_next') {
+          if (step.then === this.nextStepOverride) {
             continue;
           }
 
-          if (step.then === '_end') {
+          if (step.then === this.endStepOverride) {
             this.end();
           }
 
@@ -116,11 +119,11 @@ export class CommandRun extends DefaultCommand {
         // If condition is not valid, run "else" action
         else {
           if (step.else) {
-            if (step.else === '_next') {
+            if (step.else === this.nextStepOverride) {
               continue;
             }
 
-            if (step.else === '_end') {
+            if (step.else === this.endStepOverride) {
               this.end();
             }
 
