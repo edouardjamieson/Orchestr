@@ -39,6 +39,13 @@ export class CommandRun extends DefaultCommand {
     // Validate script
     this.validate();
 
+    // Add script variables to saved values
+    const scriptVariables = Object.keys(this.script.variables ?? {}).map(o => ({
+      id: o,
+      value: this.script.variables?.[o],
+    }));
+    this.savedValues = [...this.savedValues, ...scriptVariables];
+
     // Launch greetings
     Utils.clearConsole();
     this.logGreetings('run');

@@ -1,12 +1,10 @@
+#!/usr/bin/env node
 import { Command } from 'commander';
 import { CommandRun, CommandValidate } from './lib/commands';
 
 const program = new Command();
 
-program
-  .name('ts-cli-builder')
-  .description('A CLI builder for TypeScript')
-  .version('0.0.1');
+program.name('orchestr').description('A CLI builder for TypeScript');
 
 // Default command (run script)
 program
