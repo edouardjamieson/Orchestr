@@ -78,7 +78,6 @@ export interface ActionConfig_InputChoice {
 
 export interface ActionConfig_InputText {
   message: string;
-  placeholder?: string;
   required?: boolean;
   default?: string;
   mask?: boolean;

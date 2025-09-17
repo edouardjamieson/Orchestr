@@ -151,7 +151,6 @@ Get text input from user.
   "type": "input-text",
   "config": {
     "message": "Enter your name:",
-    "placeholder": "John Doe",
     "required": true,
     "default": "Anonymous",
     "mask": false
@@ -313,8 +312,7 @@ Run shell commands.
   "id": "runTests",
   "type": "bash",
   "config": {
-    "command": "npm test",
-    "silent": false
+    "command": "npm test"
   }
 }
 ```
@@ -376,7 +374,7 @@ Show a message to the user.
     "build",
     "askTest",
     {
-      "if": ["askTest", "==", "true"],
+      "if": ["askTest", "is-true"],
       "then": "test"
     }
   ]
