@@ -11,7 +11,7 @@
     "node": ">=18"
   },
   "bin": {
-    "orchestr": "dist/index.js"
+    "orchestr": "dist/orchestr.esm.js"
   },
   "scripts": {
     "start": "tsdx watch",
