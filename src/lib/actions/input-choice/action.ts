@@ -32,6 +32,7 @@ const ActionInputChoice = async (
     result = await checkbox({
       message: config.message,
       choices,
+      required: config.required,
     });
   } else {
     result = await select({

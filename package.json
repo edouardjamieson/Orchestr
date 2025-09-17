@@ -8,7 +8,7 @@
     "src"
   ],
   "engines": {
-    "node": ">=10"
+    "node": ">=18"
   },
   "scripts": {
     "start": "tsdx watch",
@@ -30,19 +30,9 @@
     "singleQuote": true,
     "trailingComma": "es5"
   },
-  "name": "mylib",
-  "author": "Charles-Édouard Jamieson",
-  "module": "dist/mylib.esm.js",
-  "size-limit": [
-    {
-      "path": "dist/mylib.cjs.production.min.js",
-      "limit": "10 KB"
-    },
-    {
-      "path": "dist/mylib.esm.js",
-      "limit": "10 KB"
-    }
-  ],
+  "name": "orchestr",
+  "author": "Édouard Jamieson",
+  "module": "dist/orchestr.esm.js",
   "devDependencies": {
     "@size-limit/preset-small-lib": "^11.2.0",
     "@types/node": "^24.3.3",
