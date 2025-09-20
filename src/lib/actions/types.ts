@@ -20,6 +20,7 @@ export enum ActionType {
   FILE_READ = 'file-read',
   FILE_DELETE = 'file-delete',
   FILE_MOVE = 'file-move',
+  FILE_SELECT = 'file-select',
 
   // DIRECTORIES
   DIRECTORY_CREATE = 'directory-create',
@@ -46,6 +47,7 @@ export type ActionConfig =
   | ActionConfig_FileRead
   | ActionConfig_FileDelete
   | ActionConfig_FileMove
+  | ActionConfig_FileSelect
   | ActionConfig_DirectoryCreate
   | ActionConfig_DirectoryDelete
   | ActionConfig_Message
@@ -111,6 +113,12 @@ export interface ActionConfig_FileDelete {
 export interface ActionConfig_FileMove {
   path: string;
   destination: string;
+}
+
+export interface ActionConfig_FileSelect {
+  message: string;
+  required?: boolean;
+  includeDirs?: boolean;
 }
 
 export interface ActionConfig_DirectoryCreate {

@@ -22,6 +22,7 @@ import {
   ActionDirectoryCreate,
   ActionDirectoryDelete,
   ActionBash,
+  ActionFileSelect,
 } from '../actions';
 import DefaultCommand from './commands.service';
 import { validateScriptStructure } from '../validate';
@@ -198,6 +199,9 @@ export class CommandRun extends DefaultCommand {
         break;
       case ActionType.FILE_MOVE:
         returnValue = await ActionFileMove(defaultProps);
+        break;
+      case ActionType.FILE_SELECT:
+        returnValue = await ActionFileSelect(defaultProps);
         break;
       case ActionType.DIRECTORY_CREATE:
         returnValue = await ActionDirectoryCreate(defaultProps);

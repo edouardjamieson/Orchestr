@@ -7,6 +7,7 @@ export * from './file-update';
 export * from './file-read';
 export * from './file-delete';
 export * from './file-move';
+export * from './file-select';
 export * from './directory-create';
 export * from './directory-delete';
 export * from './bash';

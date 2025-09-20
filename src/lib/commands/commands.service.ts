@@ -19,7 +19,9 @@ export default class DefaultCommand {
 
     // Get script name
     if (cmdArgs.length === 0) {
-      Utils.logError('Make sure to provide a script name.');
+      Utils.logError(
+        'Make sure to provide a script name (eg: npx orchestr@latest my-script).\n\nFor a list of available scripts, run "npx orchestr@latest list".\nFor help, run "npx orchestr@latest help".'
+      );
       process.exit(1);
     }
     this.scriptName = cmdArgs[0];

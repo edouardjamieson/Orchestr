@@ -13,6 +13,7 @@ import {
   ActionConfig_FileUpdate,
   ActionConfig_FileCreate,
   ActionConfig_InputConfirm,
+  ActionConfig_FileSelect,
 } from './types';
 
 export function getActionConfigType(
@@ -36,6 +37,8 @@ export function getActionConfigType(
       return config as ActionConfig_FileDelete;
     case ActionType.FILE_MOVE:
       return config as ActionConfig_FileMove;
+    case ActionType.FILE_SELECT:
+      return config as ActionConfig_FileSelect;
     case ActionType.DIRECTORY_CREATE:
       return config as ActionConfig_DirectoryCreate;
     case ActionType.DIRECTORY_DELETE:
