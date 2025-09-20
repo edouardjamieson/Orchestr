@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { Command } from 'commander';
-import { CommandRun, CommandValidate } from './lib/commands';
+import { CommandList, CommandRun, CommandValidate } from './lib/commands';
 
 const program = new Command();
 
@@ -13,6 +13,12 @@ program
   .allowUnknownOption()
   .description('run the CLI')
   .action(args => {
+    // List command
+    if (args[0] === '-l' || args[0] === '--list') {
+      new CommandList({ cmdArgs: args });
+      return;
+    }
+
     new CommandRun({ cmdArgs: args });
   });
 

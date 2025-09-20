@@ -2,10 +2,11 @@ import path from 'path';
 import { Script, ScriptSavedValue } from '../types';
 import Utils from '../utils';
 import { CommandOptions } from './commands.type';
-import { existsSync, readFileSync } from 'fs';
+import { existsSync, readdirSync, readFileSync } from 'fs';
 import chalk from 'chalk';
 
 export default class DefaultCommand {
+  static title = chalk.blue.bold(`🎭 Orchestr`);
   static separator = '----------------------------------------';
 
   public scriptName!: string;
@@ -86,8 +87,26 @@ export default class DefaultCommand {
     }
   }
 
+  public listScripts() {
+    const scriptsPath = path.join(process.cwd(), Utils.BASE_PATH);
+    const scripts = readdirSync(scriptsPath).filter(file =>
+      file.endsWith('.json')
+    );
+
+    // Get scripts data and parse them
+    const scriptsData = scripts.map(file => ({
+      path: file,
+      data: JSON.parse(readFileSync(path.join(scriptsPath, file), 'utf8')),
+    })) as { path: string; data: Script }[];
+
+    // Sort scripts by name
+    scriptsData.sort((a, b) => a.data?.name.localeCompare(b.data?.name ?? ''));
+
+    return scriptsData;
+  }
+
   public logGreetings(type: 'run' | 'validate') {
-    console.log(chalk.blue.bold(`🎭 Orchestr`));
+    console.log(DefaultCommand.title);
 
     if (type === 'run') {
       console.log(chalk.green(`Running: ${this.script.name}`));
