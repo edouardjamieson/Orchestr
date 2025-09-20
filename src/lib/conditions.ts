@@ -1,4 +1,9 @@
-import { IfCondition, IfElseStep, ScriptSavedValue } from './types';
+import {
+  IfCondition,
+  IfConditionCompare,
+  IfElseStep,
+  ScriptSavedValue,
+} from './types';
 import Utils from './utils';
 
 export function validateIfElseStep(
@@ -28,48 +33,65 @@ const validateIfCondition = (
   condition: IfCondition,
   savedValues: ScriptSavedValue[]
 ) => {
-  const key = condition[0];
-  const compare = condition[1];
-  const value = condition[2];
+  let key: string = '';
+  let compare: IfConditionCompare = IfConditionCompare.EQUAL;
+  let value: string = '';
+
+  const comparisonSymbols = Object.values(IfConditionCompare).filter(o =>
+    isNaN(Number(o))
+  );
+
+  // For all IfConditionCompare, check if the condition is valid
+  for (let index = 0; index < comparisonSymbols.length; index++) {
+    const comparisonSymbol = comparisonSymbols[index];
+
+    if (condition.includes(comparisonSymbol as string)) {
+      const pieces = condition.split(comparisonSymbol as string);
+      key = pieces[0].trim();
+      compare = comparisonSymbol as IfConditionCompare;
+      value = pieces[1].trim();
+      break;
+    }
+  }
 
   const checkValue = Utils.parseVariableMessage(key as string, savedValues);
 
   switch (compare) {
-    case '==':
+    case IfConditionCompare.EQUAL:
       return checkValue == value;
-    case '!=':
+    case IfConditionCompare.NOT_EQUAL:
       return checkValue != value;
-    case '>':
+    case IfConditionCompare.GREATER_THAN:
       return isNaN(Number(checkValue)) || isNaN(Number(value))
         ? false
         : Number(checkValue) > Number(value);
-    case '<':
+    case IfConditionCompare.LESS_THAN:
       return isNaN(Number(checkValue)) || isNaN(Number(value))
         ? false
         : Number(checkValue) < Number(value);
-    case '>=':
+    case IfConditionCompare.GREATER_THAN_OR_EQUAL:
       return isNaN(Number(checkValue)) || isNaN(Number(value))
         ? false
         : Number(checkValue) >= Number(value);
-    case '<=':
+    case IfConditionCompare.LESS_THAN_OR_EQUAL:
       return isNaN(Number(checkValue)) || isNaN(Number(value))
         ? false
         : Number(checkValue) <= Number(value);
-    case 'in':
+    case IfConditionCompare.IN:
       return String(value)
         ?.split(',')
         .includes(checkValue);
-    case 'not-in':
+    case IfConditionCompare.NOT_IN:
       return !String(value)
         ?.split(',')
         .includes(checkValue);
-    case 'is-empty':
+    case IfConditionCompare.IS_EMPTY:
       return checkValue === '';
-    case 'is-not-empty':
+    case IfConditionCompare.IS_NOT_EMPTY:
       return checkValue !== '';
-    case 'is-true':
+    case IfConditionCompare.IS_TRUE:
       return checkValue === 'true' || checkValue === '1';
-    case 'is-false':
+    case IfConditionCompare.IS_FALSE:
       return checkValue === 'false' || checkValue === '0';
     default:
       return false;

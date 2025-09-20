@@ -24,21 +24,34 @@ export interface IfElseStep {
   else?: string;
 }
 
-export type IfConditionCompare =
-  | '=='
-  | '!='
-  | '>'
-  | '<'
-  | '>='
-  | '<='
-  | 'in'
-  | 'not-in'
-  | 'is-empty'
-  | 'is-not-empty'
-  | 'is-true'
-  | 'is-false';
+export enum IfConditionCompare {
+  EQUAL = '==',
+  NOT_EQUAL = '!=',
+  GREATER_THAN = '>',
+  LESS_THAN = '<',
+  GREATER_THAN_OR_EQUAL = '>=',
+  LESS_THAN_OR_EQUAL = '<=',
+  IN = 'in',
+  NOT_IN = 'not-in',
+  IS_EMPTY = 'is-empty',
+  IS_NOT_EMPTY = 'is-not-empty',
+  IS_TRUE = 'is-true',
+  IS_FALSE = 'is-false',
+}
+// | '=='
+// | '!='
+// | '>'
+// | '<'
+// | '>='
+// | '<='
+// | 'in'
+// | 'not-in'
+// | 'is-empty'
+// | 'is-not-empty'
+// | 'is-true'
+// | 'is-false';
 
-export type IfCondition = [string, IfConditionCompare, any];
+export type IfCondition = string;
 
 export interface ScriptSavedValue {
   id: string;
