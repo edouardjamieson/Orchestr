@@ -39,7 +39,10 @@ const ActionFileUpdate = async (
   const fileContent = readFileSync(path, { encoding: 'utf-8' });
 
   try {
-    writeFileSync(path, `${fileContent}\n${content}`, { encoding: 'utf-8' });
+    writeFileSync(path, `${fileContent}\n${content}`, {
+      encoding: 'utf-8',
+      flush: config.overwrite,
+    });
   } catch (error) {
     return {
       success: false,
