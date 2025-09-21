@@ -1,6 +1,11 @@
 #!/usr/bin/env node
 import { Command } from 'commander';
-import { CommandList, CommandRun, CommandValidate } from './lib/commands';
+import {
+  CommandInit,
+  CommandList,
+  CommandRun,
+  CommandValidate,
+} from './lib/commands';
 
 const program = new Command();
 
@@ -34,6 +39,16 @@ program
   .description('Validate a script')
   .action(args => {
     new CommandValidate({ cmdArgs: args });
+  });
+
+// Init command
+program
+  .command('init')
+  .argument('[args...]', 'Catch all arguments/flags provided.')
+  .allowUnknownOption()
+  .description('Init a script')
+  .action(args => {
+    new CommandInit({ cmdArgs: args, ignoreScript: true });
   });
 
 program.parse(process.argv);

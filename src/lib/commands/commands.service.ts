@@ -16,10 +16,10 @@ export default class DefaultCommand {
   public ignoreArgs: boolean = false;
 
   constructor(props: CommandOptions) {
-    const { cmdArgs, ignoreArgs } = props;
+    const { cmdArgs, ignoreArgs, ignoreScript } = props;
 
     // Get script name
-    if (cmdArgs.length === 0) {
+    if (cmdArgs.length === 0 && ignoreScript !== true) {
       Utils.logError(
         'Make sure to provide a script name (eg: npx orchestr@latest my-script).\n\nFor a list of available scripts, run "npx orchestr@latest list".\nFor help, run "npx orchestr@latest help".'
       );
