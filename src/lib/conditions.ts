@@ -33,27 +33,7 @@ const validateIfCondition = (
   condition: IfCondition,
   savedValues: ScriptSavedValue[]
 ) => {
-  let key: string = '';
-  let compare: IfConditionCompare = IfConditionCompare.EQUAL;
-  let value: string = '';
-
-  const comparisonSymbols = Object.values(IfConditionCompare).filter(o =>
-    isNaN(Number(o))
-  );
-
-  // For all IfConditionCompare, check if the condition is valid
-  for (let index = 0; index < comparisonSymbols.length; index++) {
-    const comparisonSymbol = comparisonSymbols[index];
-
-    if (condition.includes(comparisonSymbol as string)) {
-      const pieces = condition.split(comparisonSymbol as string);
-      key = pieces[0].trim();
-      compare = comparisonSymbol as IfConditionCompare;
-      value = pieces[1].trim();
-      break;
-    }
-  }
-
+  const [key, compare, value] = condition;
   const checkValue = Utils.parseVariableMessage(key as string, savedValues);
 
   switch (compare) {

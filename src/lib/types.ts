@@ -51,7 +51,7 @@ export enum IfConditionCompare {
 // | 'is-true'
 // | 'is-false';
 
-export type IfCondition = string;
+export type IfCondition = [string, IfConditionCompare, string];
 
 export interface ScriptSavedValue {
   id: string;
