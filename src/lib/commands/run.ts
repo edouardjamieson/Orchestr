@@ -107,7 +107,6 @@ export class CommandRun extends DefaultCommand {
     if (typeof step === 'object') {
       // Validate condition
       const valid = validateIfElseStep(step as IfElseStep, this.savedValues);
-      console.log(valid);
 
       // If condition is valid, run "then" action
       if (valid) {
@@ -181,10 +180,7 @@ export class CommandRun extends DefaultCommand {
       actionId = actionToRun.id;
 
       if (returnValue && actionId) {
-        this.savedValues.push({
-          id: actionId,
-          value: returnValue.message ?? true,
-        });
+        this._setSaveValue(actionId, returnValue.message ?? true);
       }
     }
   }
@@ -249,6 +245,19 @@ export class CommandRun extends DefaultCommand {
     }
 
     return returnValue;
+  }
+
+  private _setSaveValue(key: string, value: any) {
+    if (this.savedValues.find(v => v.id === key)) {
+      this.savedValues = this.savedValues.map(v =>
+        v.id === key ? { id: key, value: value } : v
+      );
+    } else {
+      this.savedValues.push({
+        id: key,
+        value: value,
+      });
+    }
   }
 
   private end() {
