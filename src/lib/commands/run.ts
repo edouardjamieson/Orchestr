@@ -86,21 +86,18 @@ export class CommandRun extends DefaultCommand {
     if (typeof step === 'string') {
       if (step === this.nextStepOverride) {
         actionsToRun.push('__continue');
-      }
-      if (step === this.endStepOverride) {
+      } else if (step === this.endStepOverride) {
         actionsToRun.push('__end');
+      } else {
+        const action = await this._findAction(step);
+        if (!action) {
+          Utils.logError(
+            `Action with ID "${step}" not found at step with index ${index}`
+          );
+          process.exit(1);
+        }
+        actionsToRun.push(action);
       }
-
-      // Find action
-      const action = await this._findAction(step);
-      if (!action) {
-        Utils.logError(
-          `Action with ID "${step}" not found at step with index ${index}`
-        );
-        process.exit(1);
-      }
-
-      actionsToRun.push(action);
     }
 
     // If object (condition)
@@ -116,18 +113,18 @@ export class CommandRun extends DefaultCommand {
           actionIds.map(async id => {
             if (id === this.nextStepOverride) {
               actionsToRun.push('__continue');
-            }
-            if (id === this.endStepOverride) {
+            } else if (id === this.endStepOverride) {
               actionsToRun.push('__end');
+            } else {
+              const action = await this._findAction(id);
+              if (!action) {
+                Utils.logError(
+                  `Action with ID "${id}" not found at step with index ${index}`
+                );
+                process.exit(1);
+              }
+              actionsToRun.push(action);
             }
-            const action = await this._findAction(id);
-            if (!action) {
-              Utils.logError(
-                `Action with ID "${id}" not found at step with index ${index}`
-              );
-              process.exit(1);
-            }
-            actionsToRun.push(action);
           })
         );
       }
@@ -135,26 +132,26 @@ export class CommandRun extends DefaultCommand {
       // If condition is not valid, run "else" action
       else {
         if (!step.else) return;
-        if (step.else === this.nextStepOverride) {
+        else if (step.else === this.nextStepOverride) {
           actionsToRun.push('__continue');
-        }
-        if (step.else === this.endStepOverride) {
+        } else if (step.else === this.endStepOverride) {
           actionsToRun.push('__end');
+        } else {
+          const actionIds =
+            typeof step.else === 'string' ? [step.else] : step.else;
+          await Promise.all(
+            actionIds.map(async id => {
+              const action = await this._findAction(id);
+              if (!action) {
+                Utils.logError(
+                  `Action with ID "${id}" not found at step with index ${index}`
+                );
+                process.exit(1);
+              }
+              actionsToRun.push(action);
+            })
+          );
         }
-        const actionIds =
-          typeof step.else === 'string' ? [step.else] : step.else;
-        await Promise.all(
-          actionIds.map(async id => {
-            const action = await this._findAction(id);
-            if (!action) {
-              Utils.logError(
-                `Action with ID "${id}" not found at step with index ${index}`
-              );
-              process.exit(1);
-            }
-            actionsToRun.push(action);
-          })
-        );
       }
     }
 
