@@ -1,4 +1,4 @@
-import { IfElseStep } from '../types';
+import { IfElseStep, Step } from '../types';
 import Utils from '../utils';
 import { CommandOptions } from './commands.type';
 import chalk from 'chalk';
@@ -75,82 +75,110 @@ export class CommandRun extends DefaultCommand {
     for (let index = 0; index < steps.length; index++) {
       const step = steps[index];
 
-      let returnValue: ActionFunctionReturn | undefined = undefined;
-      let actionId: string | undefined = undefined;
+      await this._runStep(step, index);
+    }
+  }
 
-      // If string (single action)
-      if (typeof step === 'string') {
-        const action = await this._findAction(step);
-        if (!action) {
-          Utils.logError(
-            `Action with ID "${step}" not found at step with index ${index}`
-          );
-          process.exit(1);
-        }
+  private async _runStep(step: Step, index: number) {
+    const actionsToRun: (Action | '__end' | '__continue')[] = [];
 
-        const result = await this._runAction(action);
-        if (!result) continue;
-
-        returnValue = result;
-        actionId = action.id;
+    // If string (single action)
+    if (typeof step === 'string') {
+      if (step === this.nextStepOverride) {
+        actionsToRun.push('__continue');
+      }
+      if (step === this.endStepOverride) {
+        actionsToRun.push('__end');
       }
 
-      // If object (condition)
-      if (typeof step === 'object') {
-        const valid = validateIfElseStep(step as IfElseStep, this.savedValues);
+      // Find action
+      const action = await this._findAction(step);
+      if (!action) {
+        Utils.logError(
+          `Action with ID "${step}" not found at step with index ${index}`
+        );
+        process.exit(1);
+      }
 
-        // If condition is valid, run "then" action
-        if (valid) {
-          if (step.then === this.nextStepOverride) {
-            continue;
-          }
+      actionsToRun.push(action);
+    }
 
-          if (step.then === this.endStepOverride) {
-            this.end();
-          }
+    // If object (condition)
+    if (typeof step === 'object') {
+      // Validate condition
+      const valid = validateIfElseStep(step as IfElseStep, this.savedValues);
+      console.log(valid);
 
-          const action = await this._findAction(step.then);
-          if (!action) {
-            Utils.logError(
-              `Action with ID "${step.then}" not found at step with index ${index}`
-            );
-            process.exit(1);
-          }
-
-          const result = await this._runAction(action);
-          if (!result) continue;
-
-          returnValue = result;
-          actionId = action.id;
-        }
-
-        // If condition is not valid, run "else" action
-        else {
-          if (step.else) {
-            if (step.else === this.nextStepOverride) {
-              continue;
+      // If condition is valid, run "then" action
+      if (valid) {
+        const actionIds =
+          typeof step.then === 'string' ? [step.then] : step.then;
+        await Promise.all(
+          actionIds.map(async id => {
+            if (id === this.nextStepOverride) {
+              actionsToRun.push('__continue');
             }
-
-            if (step.else === this.endStepOverride) {
-              this.end();
+            if (id === this.endStepOverride) {
+              actionsToRun.push('__end');
             }
-
-            const action = await this._findAction(step.else);
+            const action = await this._findAction(id);
             if (!action) {
               Utils.logError(
-                `Action with ID "${step.else}" not found at step with index ${index}`
+                `Action with ID "${id}" not found at step with index ${index}`
               );
               process.exit(1);
             }
-
-            const result = await this._runAction(action);
-            if (!result) continue;
-
-            returnValue = result;
-            actionId = action.id;
-          } else continue;
-        }
+            actionsToRun.push(action);
+          })
+        );
       }
+
+      // If condition is not valid, run "else" action
+      else {
+        if (!step.else) return;
+        if (step.else === this.nextStepOverride) {
+          actionsToRun.push('__continue');
+        }
+        if (step.else === this.endStepOverride) {
+          actionsToRun.push('__end');
+        }
+        const actionIds =
+          typeof step.else === 'string' ? [step.else] : step.else;
+        await Promise.all(
+          actionIds.map(async id => {
+            const action = await this._findAction(id);
+            if (!action) {
+              Utils.logError(
+                `Action with ID "${id}" not found at step with index ${index}`
+              );
+              process.exit(1);
+            }
+            actionsToRun.push(action);
+          })
+        );
+      }
+    }
+
+    // Run actions
+    for (let z = 0; z < actionsToRun.length; z++) {
+      const _action = actionsToRun[z];
+
+      if (_action === this.nextStepOverride) {
+        return;
+      }
+      if (_action === this.endStepOverride) {
+        this.end();
+      }
+
+      let returnValue: ActionFunctionReturn | undefined = undefined;
+      let actionId: string | undefined = undefined;
+      const actionToRun = _action as Action;
+
+      const result = await this._runAction(actionToRun);
+      if (!result) return;
+
+      returnValue = result;
+      actionId = actionToRun.id;
 
       if (returnValue && actionId) {
         this.savedValues.push({

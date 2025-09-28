@@ -20,8 +20,8 @@ export type Step = string | IfElseStep;
 
 export interface IfElseStep {
   if: IfCondition | IfCondition[];
-  then: string;
-  else?: string;
+  then: string | string[];
+  else?: string | string[];
 }
 
 export enum IfConditionCompare {
