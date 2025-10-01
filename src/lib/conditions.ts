@@ -35,34 +35,35 @@ const validateIfCondition = (
 ) => {
   const [key, compare, value] = condition;
   const checkValue = Utils.parseVariableMessage(key as string, savedValues);
+  const compareValue = Utils.parseVariableMessage(value as string, savedValues);
 
   switch (compare) {
     case IfConditionCompare.EQUAL:
-      return checkValue == value;
+      return checkValue == compareValue;
     case IfConditionCompare.NOT_EQUAL:
-      return checkValue != value;
+      return checkValue != compareValue;
     case IfConditionCompare.GREATER_THAN:
-      return isNaN(Number(checkValue)) || isNaN(Number(value))
+      return isNaN(Number(checkValue)) || isNaN(Number(compareValue))
         ? false
-        : Number(checkValue) > Number(value);
+        : Number(checkValue) > Number(compareValue);
     case IfConditionCompare.LESS_THAN:
-      return isNaN(Number(checkValue)) || isNaN(Number(value))
+      return isNaN(Number(checkValue)) || isNaN(Number(compareValue))
         ? false
-        : Number(checkValue) < Number(value);
+        : Number(checkValue) < Number(compareValue);
     case IfConditionCompare.GREATER_THAN_OR_EQUAL:
-      return isNaN(Number(checkValue)) || isNaN(Number(value))
+      return isNaN(Number(checkValue)) || isNaN(Number(compareValue))
         ? false
-        : Number(checkValue) >= Number(value);
+        : Number(checkValue) >= Number(compareValue);
     case IfConditionCompare.LESS_THAN_OR_EQUAL:
-      return isNaN(Number(checkValue)) || isNaN(Number(value))
+      return isNaN(Number(checkValue)) || isNaN(Number(compareValue))
         ? false
-        : Number(checkValue) <= Number(value);
+        : Number(checkValue) <= Number(compareValue);
     case IfConditionCompare.IN:
-      return String(value)
+      return String(compareValue)
         ?.split(',')
         .includes(checkValue);
     case IfConditionCompare.NOT_IN:
-      return !String(value)
+      return !String(compareValue)
         ?.split(',')
         .includes(checkValue);
     case IfConditionCompare.IS_EMPTY:
