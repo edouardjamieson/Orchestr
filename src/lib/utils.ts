@@ -230,7 +230,7 @@ export default class Utils {
             continue;
           }
 
-          if (includeDirs) {
+          if (includeDirs && (!term || fullPath.includes(term))) {
             results.push({ path: fullPath, isFile: false });
           }
 
