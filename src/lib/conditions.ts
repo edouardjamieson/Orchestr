@@ -35,7 +35,9 @@ const validateIfCondition = (
 ) => {
   const [key, compare, value] = condition;
   const checkValue = Utils.parseVariableMessage(key as string, savedValues);
-  const compareValue = Utils.parseVariableMessage(value as string, savedValues);
+  const compareValue = value
+    ? Utils.parseVariableMessage(value as string, savedValues)
+    : value;
 
   switch (compare) {
     case IfConditionCompare.EQUAL:
